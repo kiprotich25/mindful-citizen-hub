@@ -72,7 +72,7 @@ const Dashboard = () => {
                 <Users className="h-6 w-6 text-green-600" />
                 <Heart className="h-6 w-6 text-pink-600" />
               </div>
-              <h1 className="text-xl font-bold text-gray-900">Civic Learn</h1>
+              <h1 className="text-xl font-bold text-gray-900">Mindful Civic</h1>
             </div>
             <div className="flex items-center space-x-4">
               <span className="text-sm text-gray-600">Welcome, {user?.user_metadata?.full_name || user?.email}</span>
