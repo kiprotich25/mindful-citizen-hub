@@ -6,8 +6,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { CheckCircle, Circle, BookOpen } from 'lucide-react';
+import { Progress } from '@/components/ui/progress';
+import { CheckCircle, Circle, BookOpen, TrendingUp } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { ModuleModal } from './ModuleModal';
 
 export const ModulesSection = () => {
   const { user } = useAuth();
@@ -16,6 +18,8 @@ export const ModulesSection = () => {
   const [userProgress, setUserProgress] = useState([]);
   const [filter, setFilter] = useState('all');
   const [loading, setLoading] = useState(true);
+  const [selectedModule, setSelectedModule] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -45,6 +49,15 @@ export const ModulesSection = () => {
     return userProgress.some((progress: any) => 
       progress.module_id === moduleId && progress.completed
     );
+  };
+
+  const getModuleProgress = (moduleId: string) => {
+    return userProgress.find((progress: any) => progress.module_id === moduleId);
+  };
+
+  const openModuleModal = (module: any) => {
+    setSelectedModule(module);
+    setModalOpen(true);
   };
 
   const toggleModuleCompletion = async (moduleId: string) => {
@@ -89,6 +102,12 @@ export const ModulesSection = () => {
     }
   };
 
+  const getOverallProgress = () => {
+    const completedCount = userProgress.filter(p => p.completed).length;
+    const totalModules = modules.length;
+    return totalModules > 0 ? (completedCount / totalModules) * 100 : 0;
+  };
+
   if (loading) {
     return <div className="text-center py-8">Loading modules...</div>;
   }
@@ -113,9 +132,33 @@ export const ModulesSection = () => {
         </Select>
       </div>
 
+      {/* Overall Progress Card */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center space-x-2">
+            <TrendingUp className="h-5 w-5" />
+            <span>Your Learning Progress</span>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-2">
+            <div className="flex justify-between text-sm">
+              <span>Completed Modules</span>
+              <span>{userProgress.filter(p => p.completed).length} / {modules.length}</span>
+            </div>
+            <Progress value={getOverallProgress()} className="h-2" />
+            <p className="text-xs text-gray-600">
+              {getOverallProgress().toFixed(0)}% of all modules completed
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredModules.map((module: any) => {
           const completed = isModuleCompleted(module.id);
+          const progress = getModuleProgress(module.id);
+          
           return (
             <Card key={module.id} className="hover:shadow-lg transition-shadow">
               <CardHeader>
@@ -141,8 +184,25 @@ export const ModulesSection = () => {
                 <CardDescription className="mb-4">
                   {module.content}
                 </CardDescription>
-                <div className="flex items-center justify-between">
-                  <Button variant="outline" size="sm">
+                
+                {progress && (
+                  <div className="mb-4 p-2 bg-gray-50 rounded text-xs">
+                    {completed ? (
+                      <span className="text-green-600 font-medium">
+                        ✓ Completed on {new Date(progress.completed_at).toLocaleDateString()}
+                      </span>
+                    ) : (
+                      <span className="text-blue-600">📚 In Progress</span>
+                    )}
+                  </div>
+                )}
+
+                <div className="flex items-center justify-between space-x-2">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => openModuleModal(module)}
+                  >
                     <BookOpen className="h-4 w-4 mr-2" />
                     Read Module
                   </Button>
@@ -167,6 +227,14 @@ export const ModulesSection = () => {
           <p className="text-gray-600">Try adjusting your filter or check back later for new content.</p>
         </div>
       )}
+
+      {/* Module Modal */}
+      <ModuleModal
+        module={selectedModule}
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onProgressUpdate={fetchData}
+      />
     </div>
   );
 };
