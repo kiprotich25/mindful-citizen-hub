@@ -3,10 +3,10 @@ import { Instagram, Mail, Linkedin } from "lucide-react";
 export default function Footer() {
   return (
     <footer className="bg-muted text-muted-foreground py-8 px-4 md:px-12">
-      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-20">
+      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12">
         {/* Column 1: App Info */}
         <div>
-          <h2 className="text-xl font-bold text-primary">Mindful Civic Journey</h2>
+          <h2 className="text-xl font-bold text-primary"> Civic Learn</h2>
           <p className="mt-2 text-sm">
             Empowering youth with civic knowledge, mental health awareness, and drug prevention tools.
           </p>
