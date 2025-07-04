@@ -1,14 +1,19 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useAuth } from '@/hooks/useAuth';
+import { useEffect } from 'react';
+import Dashboard from '@/components/Dashboard';
 
 const Index = () => {
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
-    </div>
-  );
+  const { user } = useAuth();
+
+  // This component is no longer needed as the main routing is handled in App.tsx
+  // But keeping it for backward compatibility
+  useEffect(() => {
+    if (user) {
+      // User is authenticated, Dashboard will be shown
+    }
+  }, [user]);
+
+  return <Dashboard />;
 };
 
 export default Index;
