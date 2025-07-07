@@ -1,207 +1,160 @@
-
-import { useState, useEffect } from 'react';
-import { useAuth } from '@/hooks/useAuth';
-import { supabase } from '@/integrations/supabase/client';
-import { Button } from '@/components/ui/button';
+import { useState, useEffect, useRef } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { MessageCircle, Send, Bot, User } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
-import { BookOpen, Users, Heart, Brain, Shield, MessageCircle, LogOut } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
-import { ModulesSection } from '@/components/ModulesSection';
-import { InstitutionsDirectory } from '@/components/InstitutionsDirectory';
-import { MentalHealthChallenge } from '@/components/MentalHealthChallenge';
-import { AIChat } from '@/components/AIChat';
-import Footer from '@/components/Footer';
 
+interface Message {
+  id: string;
+  content: string;
+  isUser: boolean;
+  timestamp: Date;
+}
 
-const Dashboard = () => {
-  const { user, signOut } = useAuth();
-  const { toast } = useToast();
-  const [activeTab, setActiveTab] = useState('overview');
-  const [modules, setModules] = useState([]);
-  const [userProgress, setUserProgress] = useState([]);
-  const [loading, setLoading] = useState(true);
+export const AIChat = () => {
+  const [messages, setMessages] = useState<Message[]>([{
+    id: '1',
+    content: "Hello! I'm your AI assistant for civic education. Ask me about civic rights, mental health, drug awareness, and more!",
+    isUser: false,
+    timestamp: new Date()
+  }]);
+
+  const [inputMessage, setInputMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
 
-  const fetchData = async () => {
-    try {
-      const [modulesResponse, progressResponse] = await Promise.all([
-        supabase.from('modules').select('*'),
-        supabase.from('user_progress').select('*').eq('user_id', user?.id)
-      ]);
-
-      if (modulesResponse.data) setModules(modulesResponse.data);
-      if (progressResponse.data) setUserProgress(progressResponse.data);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    } finally {
-      setLoading(false);
+  const getAIResponse = (userMessage: string): string => {
+    const message = userMessage.toLowerCase();
+    if (message.includes('civic') || message.includes('rights')) {
+      return "Civic rights include voting, freedom of expression, and equal access to public services. Want more details?";
+    } else if (message.includes('mental') || message.includes('anxiety')) {
+      return "Mental health matters! Practice mindfulness, talk to trusted adults, and reach out to professionals if needed.";
+    } else if (message.includes('drug')) {
+      return "Drugs can harm your body and mind. Stay informed, say no to peer pressure, and seek support when needed.";
+    } else {
+      return "I'm here to help with civic rights, mental health, and drug awareness. What would you like to know more about?";
     }
   };
 
-  const handleSignOut = async () => {
-    await signOut();
-    toast({
-      title: "Signed out successfully",
-      description: "See you next time!"
-    });
+  const sendMessage = () => {
+    if (!inputMessage.trim()) return;
+
+    const userMessage: Message = {
+      id: Date.now().toString(),
+      content: inputMessage,
+      isUser: true,
+      timestamp: new Date()
+    };
+
+    setMessages(prev => [...prev, userMessage]);
+    setInputMessage('');
+    setIsLoading(true);
+
+    setTimeout(() => {
+      const aiResponse: Message = {
+        id: (Date.now() + 1).toString(),
+        content: getAIResponse(userMessage.content),
+        isUser: false,
+        timestamp: new Date()
+      };
+
+      setMessages(prev => [...prev, aiResponse]);
+      setIsLoading(false);
+    }, 1000);
   };
 
-  const completedModules = userProgress.filter(p => p.completed).length;
-  const totalModules = modules.length;
-  const progressPercentage = totalModules > 0 ? (completedModules / totalModules) * 100 : 0;
-
-  if (loading) {
-    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
-  }
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  };
 
   return (
-  <div className="min-h-screen w-full flex flex-col bg-white">
-    <div className="min-h-screen bg-gray-50 flex flex-col ">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-3">
-              <div className="flex space-x-1">
-                <BookOpen className="h-6 w-6 text-blue-600" />
-                <Users className="h-6 w-6 text-green-600" />
-                <Heart className="h-6 w-6 text-pink-600" />
-              </div>
-              <h1 className="text-xl font-bold text-gray-900">Civic Learn</h1>
-            </div>
-            <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-600">Welcome, {user?.user_metadata?.full_name || user?.email}</span>
-              <Button variant="ghost" size="sm" onClick={handleSignOut}>
-                <LogOut className="h-4 w-4 mr-2" />
-                Sign Out
-              </Button>
-            </div>
-          </div>
-        </div>
-      </header>
+    <div className="space-y-6">
+      <div>
+        <h2 className="text-2xl font-bold text-gray-900">AI Assistant</h2>
+        <p className="text-gray-600">Ask anything about civic rights, mental health, or drug awareness.I specialize in only these areas</p>
+      </div>
 
-      {/* Navigation */}
-      <nav className="bg-white border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row md:space-x-8 space-y-2 md:space-y-0">
-            {[
-              { id: 'overview', label: 'Overview', icon: BookOpen },
-              { id: 'modules', label: 'Learning Modules', icon: Brain },
-              { id: 'institutions', label: 'Institutions', icon: Users },
-              { id: 'chat', label: 'AI Assistant', icon: MessageCircle }
-            ].map(({ id, label, icon: Icon }) => (
-              <button
-                key={id}
-                onClick={() => setActiveTab(id)}
-                className={`flex items-center space-x-2 py-2 px-2 border-l-4 md:border-l-0 md:border-b-2 text-sm font-medium ${
-                  activeTab === id
-                    ? 'border-blue-500 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700'
-                }`}
-              >
-                <Icon className="h-4 w-4" />
-                <span>{label}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-      </nav>
+      <Card className="h-[600px] flex flex-col">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <MessageCircle className="h-5 w-5 text-blue-600" /> Chat Assistant
+          </CardTitle>
+          <CardDescription>
+            Instant help with your civic education questions
+          </CardDescription>
+        </CardHeader>
 
-      {/* Main Content */}
-      <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        {activeTab === 'overview' && (
-          <div className="space-y-6">
-            {/* Progress Overview */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Learning Progress</CardTitle>
-                  <BookOpen className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{completedModules}/{totalModules}</div>
-                  <p className="text-xs text-muted-foreground">modules completed</p>
-                  <Progress value={progressPercentage} className="mt-2" />
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Categories</CardTitle>
-                  <Shield className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="flex flex-wrap gap-1">
-                    <Badge variant="secondary">Civic Rights</Badge>
-                    <Badge variant="secondary">Mental Health</Badge>
-                    <Badge variant="secondary">Drug Awareness</Badge>
+        <CardContent className="flex-1 flex flex-col overflow-hidden">
+          <ScrollArea className="flex-1 pr-2">
+            <div className="space-y-4 pb-10">
+              {messages.map((message) => (
+                <div key={message.id} className={`flex items-start gap-3 ${message.isUser ? 'justify-end' : 'justify-start'}`}>
+                  {!message.isUser && (
+                    <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                      <Bot className="h-4 w-4 text-blue-600" />
+                    </div>
+                  )}
+                  <div className={`max-w-[80%] p-3 rounded-lg ${message.isUser ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-900'}`}>
+                    <p className="text-sm">{message.content}</p>
+                    <p className={`text-xs mt-1 ${message.isUser ? 'text-blue-100' : 'text-gray-500'}`}>
+                      {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    </p>
                   </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Resources</CardTitle>
-                  <Users className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">4</div>
-                  <p className="text-xs text-muted-foreground">institutions available</p>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Daily Mental Health Challenge */}
-            <MentalHealthChallenge />
-
-            {/* Quick Access */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Quick Access</CardTitle>
-                <CardDescription>Jump into your learning modules</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {modules.slice(0, 3).map((module: any) => (
-                    <Card key={module.id} className="cursor-pointer hover:shadow-md transition-shadow">
-                      <CardHeader className="pb-2">
-                        <div className="flex items-center justify-between">
-                          <Badge variant={
-                            module.category === 'civic' ? 'default' :
-                            module.category === 'mental' ? 'secondary' : 'outline'
-                          }>
-                            {module.category}
-                          </Badge>
-                          <Badge variant="outline">{module.level}</Badge>
-                        </div>
-                      </CardHeader>
-                      <CardContent>
-                        <h3 className="font-semibold text-sm">{module.title}</h3>
-                        <p className="text-xs text-muted-foreground mt-1">{module.content}</p>
-                      </CardContent>
-                    </Card>
-                  ))}
+                  {message.isUser && (
+                    <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
+                      <User className="h-4 w-4 text-gray-600" />
+                    </div>
+                  )}
                 </div>
-              </CardContent>
-            </Card>
-            
-          </div>
-        )}
+              ))}
+              {isLoading && (
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                    <Bot className="h-4 w-4 text-blue-600" />
+                  </div>
+                  <div className="bg-gray-100 p-3 rounded-lg">
+                    <div className="flex space-x-1">
+                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" />
+                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }} />
+                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
+                    </div>
+                  </div>
+                </div>
+              )}
+              <div ref={bottomRef} />
+            </div>
+          </ScrollArea>
 
-        {activeTab === 'modules' && <ModulesSection />}
-        {activeTab === 'institutions' && <InstitutionsDirectory />}
-        {activeTab === 'chat' && <AIChat />}
-      
-      </main>
-      <Footer/>
+          <div className="flex gap-2 mt-4">
+            <Input
+              placeholder="Ask something..."
+              value={inputMessage}
+              onChange={(e) => setInputMessage(e.target.value)}
+              onKeyPress={handleKeyPress}
+              disabled={isLoading}
+              className="flex-1"
+            />
+            <Button onClick={sendMessage} disabled={isLoading || !inputMessage.trim()} size="sm">
+              <Send className="h-4 w-4" />
+            </Button>
+          </div>
+
+          <div className="flex flex-wrap gap-2 mt-2">
+            <Badge onClick={() => setInputMessage('What are my civic rights?')} variant="outline" className="cursor-pointer hover:bg-gray-100">Civic Rights</Badge>
+            <Badge onClick={() => setInputMessage('How can I deal with anxiety?')} variant="outline" className="cursor-pointer hover:bg-gray-100">Mental Health</Badge>
+            <Badge onClick={() => setInputMessage('Why avoid drugs?')} variant="outline" className="cursor-pointer hover:bg-gray-100">Drug Awareness</Badge>
+          </div>
+        </CardContent>
+      </Card>
     </div>
-  </div>
   );
 };
-
-export default Dashboard;
