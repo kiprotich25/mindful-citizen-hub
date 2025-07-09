@@ -79,11 +79,11 @@ export const AIChat = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-gray-900">AI Assistant</h2>
+        <h2 className="text-2xl font-bold text-primary">AI Assistant</h2>
         <p className="text-gray-600">Ask anything about civic rights, mental health, or drug awareness</p>
       </div>
 
-      <Card className="h-[600px] flex flex-col">
+      <Card className="h-[600px]  flex flex-col">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <MessageCircle className="h-5 w-5 text-blue-600" /> Chat Assistant
@@ -99,19 +99,19 @@ export const AIChat = () => {
               {messages.map((message) => (
                 <div key={message.id} className={`flex items-start gap-3 ${message.isUser ? 'justify-end' : 'justify-start'}`}>
                   {!message.isUser && (
-                    <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                      <Bot className="h-4 w-4 text-blue-600" />
+                    <div className="w-8 h-8 bg-muted-foreground rounded-full flex items-center justify-center">
+                      <Bot className="h-4 w-4  text-blue-600" />
                     </div>
                   )}
-                  <div className={`max-w-[80%] p-3 rounded-lg ${message.isUser ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-900'}`}>
+                  <div className={`max-w-[80%] p-3 rounded-lg bg-muted text-muted-foreground ${message.isUser ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-900'}`}>
                     <p className="text-sm">{message.content}</p>
                     <p className={`text-xs mt-1 ${message.isUser ? 'text-blue-100' : 'text-gray-500'}`}>
                       {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </p>
                   </div>
                   {message.isUser && (
-                    <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
-                      <User className="h-4 w-4 text-gray-600" />
+                    <div className="w-8 h-8 bg-muted-foreground rounded-full flex items-center justify-center">
+                      <User className="h-4 w-4 text-muted" />
                     </div>
                   )}
                 </div>

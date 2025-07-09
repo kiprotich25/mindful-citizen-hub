@@ -72,12 +72,12 @@ export const MentalHealthChallenge = () => {
   if (!todayChallenge) return null;
 
   return (
-    <Card className="border-pink-200 bg-gradient-to-r from-pink-50 to-purple-50">
+    <Card className="border-pink-200 bg-card">
       <CardHeader>
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <Heart className="h-5 w-5 text-pink-600" />
-            <CardTitle className="text-pink-800">Daily Mental Health Challenge</CardTitle>
+            <CardTitle className="text-pink-800 ">Daily Mental Health Challenge</CardTitle>
           </div>
           {completed && <CheckCircle className="h-5 w-5 text-green-600" />}
         </div>
@@ -88,8 +88,8 @@ export const MentalHealthChallenge = () => {
       <CardContent>
         <div className="space-y-4">
           <div>
-            <h3 className="font-semibold text-gray-900">{todayChallenge.title}</h3>
-            <p className="text-gray-700 mt-1">{todayChallenge.description}</p>
+            <h3 className="font-semibold text-pretty">{todayChallenge.title}</h3>
+            <p className="text-gray-700 dark:text-gray-500 mt-1">{todayChallenge.description}</p>
           </div>
           
           <div className="flex items-center justify-between">

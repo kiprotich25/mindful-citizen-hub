@@ -109,7 +109,7 @@ export const ModulesSection = () => {
   };
 
   if (loading) {
-    return <div className="text-center py-8">Loading modules...</div>;
+    return <div className="text-center text-foreground py-8">Loading modules...</div>;
   }
 
   return (
