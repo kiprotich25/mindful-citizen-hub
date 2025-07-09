@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { BookOpen, Users, Heart, Brain, Shield, MessageCircle, LogOut } from 'lucide-react';
+import { BookOpen, Users, Heart, Brain, Shield, MessageCircle, Sun, Moon, LogOut } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { ModulesSection } from '@/components/ModulesSection';
 import { InstitutionsDirectory } from '@/components/InstitutionsDirectory';
@@ -50,6 +50,17 @@ const Dashboard = () => {
     });
   };
 
+  const toggleDarkMode =() => {
+                const root = window.document.documentElement;
+                if (root.classList.contains('dark')) {
+                root.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+                } else {
+                root.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+                }
+              }
+
   const completedModules = userProgress.filter(p => p.completed).length;
   const totalModules = modules.length;
   const progressPercentage = totalModules > 0 ? (completedModules / totalModules) * 100 : 0;
@@ -74,10 +85,22 @@ const Dashboard = () => {
               <h1 className="text-xl font-bold text-foreground">Civic Learn</h1>
             </div>
             <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-600">Welcome, {user?.user_metadata?.full_name || user?.email}</span>
+              <span className="text-sm text-gray-600 dark:text-gray-300">Welcome, {user?.user_metadata?.full_name || user?.email}</span>
+              {/* Toggle light/dark mode */}
+              <button
+              aria-label="Toggle theme"
+              className="rounded p-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+              onClick={()=> toggleDarkMode()}
+              >
+              {typeof window !== 'undefined' && document.documentElement.classList.contains('dark') ? (
+                <Sun className="h-5 w-5 text-yellow-400" />
+              ) : (
+                <Moon className="h-5 w-5 text-gray-700" />
+              )}
+              </button>
               <Button className='dark:bg-gray-700 dark:text-gray-400' variant="ghost" size="sm" onClick={handleSignOut}>
-                <LogOut className="h-4 w-4 mr-2" />
-                Sign Out
+              <LogOut className="h-4 w-4 mr-2" />
+              Sign Out
               </Button>
             </div>
           </div>
