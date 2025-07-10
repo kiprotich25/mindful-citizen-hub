@@ -12,6 +12,7 @@ import { InstitutionsDirectory } from '@/components/InstitutionsDirectory';
 import { MentalHealthChallenge } from '@/components/MentalHealthChallenge';
 import { AIChat } from '@/components/AIChat';
 import Footer from '@/components/Footer';
+import DarkLightToggle from './ui/darkLightToggle';
 
 
 const Dashboard = () => {
@@ -50,16 +51,6 @@ const Dashboard = () => {
     });
   };
 
-  const toggleDarkMode =() => {
-                const root = window.document.documentElement;
-                if (root.classList.contains('dark')) {
-                root.classList.remove('dark');
-                localStorage.setItem('theme', 'light');
-                } else {
-                root.classList.add('dark');
-                localStorage.setItem('theme', 'dark');
-                }
-              }
 
   const completedModules = userProgress.filter(p => p.completed).length;
   const totalModules = modules.length;
@@ -87,17 +78,7 @@ const Dashboard = () => {
             <div className="flex items-center space-x-4">
               <span className="text-sm text-gray-600 dark:text-gray-300">Welcome, {user?.user_metadata?.full_name || user?.email}</span>
               {/* Toggle light/dark mode */}
-              <button
-              aria-label="Toggle theme"
-              className="rounded p-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
-              onClick={()=> toggleDarkMode()}
-              >
-              {typeof window !== 'undefined' && document.documentElement.classList.contains('dark') ? (
-                <Sun className="h-5 w-5 text-yellow-400" />
-              ) : (
-                <Moon className="h-5 w-5 text-gray-700" />
-              )}
-              </button>
+              <DarkLightToggle/>
               <Button className='dark:bg-gray-700 dark:text-gray-400' variant="ghost" size="sm" onClick={handleSignOut}>
               <LogOut className="h-4 w-4 mr-2" />
               Sign Out
