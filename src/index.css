@@ -99,7 +99,7 @@ All colors MUST be HSL.
     @apply border-border;
   }
 
-  body {
+  body, html {
     @apply bg-background text-foreground;
   }
 }

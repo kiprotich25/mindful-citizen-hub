@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
+import DarkLightToggle from '@/components/ui/darkLightToggle';
 import { BookOpen, Users, Heart } from 'lucide-react';
 
 const Auth = () => {
@@ -70,16 +71,20 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 flex items-center justify-center p-4">
+    <div className="min-h-screen container flex items-center justify-center p-4 bg-background">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="flex justify-center space-x-2 mb-4">
-            <BookOpen className="h-8 w-8 text-blue-600" />
-            <Users className="h-8 w-8 text-green-600" />
-            <Heart className="h-8 w-8 text-pink-600" />
+          <div className=' w-full flex flex-row pr-3'>
+            <div className="flex w-full justify-center space-x-2 mb-4 pl-16">
+              <BookOpen className="h-8 w-8 text-blue-600" />
+              <Users className="h-8 w-8 text-green-600" />
+              <Heart className="h-8 w-8 text-pink-600" />
+              
+            </div>
+            < DarkLightToggle/>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Civic Learn</h1>
-          <p className="text-gray-600">Empowering communities through education</p>
+          <h1 className="text-3xl text-foreground font-bold mb-2">Civic Learn</h1>
+          <p className="text-muted-foreground">Empowering communities through education</p>
         </div>
 
         <Tabs defaultValue="signin" className="w-full">

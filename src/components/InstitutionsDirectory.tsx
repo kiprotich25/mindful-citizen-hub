@@ -64,14 +64,14 @@ export const InstitutionsDirectory = () => {
   };
 
   if (loading) {
-    return <div className="text-center py-8">Loading institutions...</div>;
+    return <div className="text-center text-foreground py-8">Loading institutions...</div>;
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 bg-muted">
       <div>
-        <h2 className="text-2xl font-bold text-gray-900">Institutions Directory</h2>
-        <p className="text-gray-600">Find local resources and support services</p>
+        <h2 className="text-2xl font-bold text-primary">Institutions Directory</h2>
+        <p className="text-muted-foreground">Find local resources and support services</p>
       </div>
 
       {/* Filters */}
@@ -88,13 +88,13 @@ export const InstitutionsDirectory = () => {
           </div>
         </div>
         <Select value={paidFilter} onValueChange={setPaidFilter}>
-          <SelectTrigger className="w-48">
+          <SelectTrigger className="w-48 bg-background text-foreground border-border">
             <SelectValue placeholder="Filter by type" />
           </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Services</SelectItem>
-            <SelectItem value="free">Free Services</SelectItem>
-            <SelectItem value="paid">Paid Services</SelectItem>
+          <SelectContent className="bg-background text-foreground border-border">
+            <SelectItem className="bg-background text-foreground border-border" value="all">All Services</SelectItem>
+            <SelectItem className="bg-background text-foreground border-border" value="free">Free Services</SelectItem>
+            <SelectItem className="bg-background text-foreground border-border" value="paid">Paid Services</SelectItem>
           </SelectContent>
         </Select>
       </div>

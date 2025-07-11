@@ -5,13 +5,14 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { BookOpen, Users, Heart, Brain, Shield, MessageCircle, LogOut } from 'lucide-react';
+import { BookOpen, Users, Heart, Brain, Shield, MessageCircle, Sun, Moon, LogOut } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { ModulesSection } from '@/components/ModulesSection';
 import { InstitutionsDirectory } from '@/components/InstitutionsDirectory';
 import { MentalHealthChallenge } from '@/components/MentalHealthChallenge';
 import { AIChat } from '@/components/AIChat';
 import Footer from '@/components/Footer';
+import DarkLightToggle from './ui/darkLightToggle';
 
 
 const Dashboard = () => {
@@ -24,7 +25,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, );
 
   const fetchData = async () => {
     try {
@@ -50,19 +51,20 @@ const Dashboard = () => {
     });
   };
 
+
   const completedModules = userProgress.filter(p => p.completed).length;
   const totalModules = modules.length;
   const progressPercentage = totalModules > 0 ? (completedModules / totalModules) * 100 : 0;
 
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+    return <div className="min-h-screen flex items-center justify-center bg-background">Loading...</div>;
   }
 
   return (
-  <div className="min-h-screen w-full flex flex-col bg-white">
+  <div className="min-h-screen w-full flex flex-col bg-background">
     <div className="min-h-screen bg-gray-50 flex flex-col ">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b">
+      <header className="bg-background shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-3">
@@ -71,13 +73,15 @@ const Dashboard = () => {
                 <Users className="h-6 w-6 text-green-600" />
                 <Heart className="h-6 w-6 text-pink-600" />
               </div>
-              <h1 className="text-xl font-bold text-gray-900">Civic Learn</h1>
+              <h1 className="text-xl font-bold text-foreground">Civic Learn</h1>
             </div>
             <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-600">Welcome, {user?.user_metadata?.full_name || user?.email}</span>
-              <Button variant="ghost" size="sm" onClick={handleSignOut}>
-                <LogOut className="h-4 w-4 mr-2" />
-                Sign Out
+              <span className="text-sm text-gray-600 dark:text-gray-300">Welcome, {user?.user_metadata?.full_name || user?.email}</span>
+              {/* Toggle light/dark mode */}
+              <DarkLightToggle/>
+              <Button className='dark:bg-gray-700 dark:text-gray-400' variant="ghost" size="sm" onClick={handleSignOut}>
+              <LogOut className="h-4 w-4 mr-2" />
+              Sign Out
               </Button>
             </div>
           </div>
@@ -85,9 +89,9 @@ const Dashboard = () => {
       </header>
 
       {/* Navigation */}
-      <nav className="bg-white border-b">
+      <nav className="bg-muted text-muted-foreground border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row md:space-x-8 space-y-2 md:space-y-0">
+          <div className="flex  flex-col md:flex-row md:space-x-8 space-y-2 md:space-y-0">
             {[
               { id: 'overview', label: 'Overview', icon: BookOpen },
               { id: 'modules', label: 'Learning Modules', icon: Brain },
@@ -112,7 +116,7 @@ const Dashboard = () => {
       </nav>
 
       {/* Main Content */}
-      <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <main className="flex-1 w-full bg-background max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {activeTab === 'overview' && (
           <div className="space-y-6">
             {/* Progress Overview */}

@@ -109,14 +109,14 @@ export const ModulesSection = () => {
   };
 
   if (loading) {
-    return <div className="text-center py-8">Loading modules...</div>;
+    return <div className="text-center text-foreground py-8">Loading modules...</div>;
   }
 
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Learning Modules</h2>
+          <h2 className="text-2xl font-bold text-foreground">Learning Modules</h2>
           <p className="text-gray-600">Explore our comprehensive educational content</p>
         </div>
         <Select value={filter} onValueChange={setFilter}>
