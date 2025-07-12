@@ -103,9 +103,9 @@ export const AIChat = () => {
                       <Bot className="h-4 w-4  text-blue-600" />
                     </div>
                   )}
-                  <div className={`max-w-[80%] p-3 rounded-lg bg-muted text-muted-foreground ${message.isUser ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-900'}`}>
+                  <div className={`max-w-[80%] p-3 rounded-lg bg-muted text-muted-foreground ${message.isUser ? 'bg-blue-600 text-gray-900 dark:text-white' : 'bg-gray-100 text-gray-900'}`}>
                     <p className="text-sm">{message.content}</p>
-                    <p className={`text-xs mt-1 ${message.isUser ? 'text-blue-100' : 'text-gray-500'}`}>
+                    <p className={`text-xs mt-1 ${message.isUser ? 'text-blue-400' : 'text-gray-500'}`}>
                       {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </p>
                   </div>
